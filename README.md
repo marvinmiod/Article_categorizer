@@ -1,5 +1,5 @@
 # Article_categorizer
- Analyse article text and categorise Sport, Tech, Business, Entertainment and Politics.
+ Analyse article text and categorise the text under Sport, Tech, Business, Entertainment and Politics.
 
 
 # Description
@@ -53,30 +53,37 @@ https://raw.githubusercontent.com/susanli2016/PyCon-Canada-2019-NLP-Tutorial/mas
 
 # Images
 
-Training model architecture
+1. Training model architecture
+
 ![image](image/model.png)
 
 
-Training process plotted using Tensorboard
-![image](image/tensorboard.png)
+##
+2. Training process plotted using Tensorboard
+
+![image](image/Tensorboard.png)
 
 
-Training Epoch: loss and accuracy
-![image](image/training_epoch_loss_accuracy.png)
+##
+3. Summary report and accuracy score
 
-
-Summary report and accuracy score
 ![image](image/Summary_report.png)
 
-Confusion Matrix
+
+##
+4. Confusion Matrix
+
 ![image](image/Confusion_matrix.png)
 
-Training & validation accuracy plot
 
-![image](image/training_accuracy.png)
+##
+5. Training & validation accuracy plot
+
+![image](image/Training_accuracy.png)
 
 
-Training & validation loss plot
+##
+6. Training & validation loss plot
 
-![image](image/training_loss.png)
+![image](image/Training_loss.png)
 
