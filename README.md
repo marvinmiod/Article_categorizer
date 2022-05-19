@@ -53,37 +53,36 @@ https://raw.githubusercontent.com/susanli2016/PyCon-Canada-2019-NLP-Tutorial/mas
 
 # Images
 
-1. Training model architecture
+### 1. Training model architecture
 
 ![image](image/model.png)
 
-
 ##
-2. Training process plotted using Tensorboard
+### 2. Training process plotted using Tensorboard
 
 ![image](image/Tensorboard.png)
 
 
 ##
-3. Summary report and accuracy score
+### 3. Summary report and accuracy score
 
 ![image](image/Summary_report.png)
 
 
 ##
-4. Confusion Matrix
+### 4. Confusion Matrix
 
 ![image](image/Confusion_matrix.png)
 
 
 ##
-5. Training & validation accuracy plot
+### 5. Training & validation accuracy plot
 
 ![image](image/Training_accuracy.png)
 
 
 ##
-6. Training & validation loss plot
+### 6. Training & validation loss plot
 
 ![image](image/Training_loss.png)
 
