@@ -122,6 +122,10 @@ class ExploratoryDataAnalysis():
         tokenizer = Tokenizer(num_words=num_words, oov_token=oov_token)
         tokenizer.fit_on_texts(data)
         
+          # to observe the number of words
+        word_index = tokenizer.word_index
+        
+        
         # to save the tokenizer for deployment purposes
         
         token_json = tokenizer.to_json()
@@ -132,6 +136,7 @@ class ExploratoryDataAnalysis():
         
         # to observe the number of words
         word_index = tokenizer.word_index
+        #print(len(word_index)+1)
         
         if prt == True:
             print(word_index)
@@ -296,4 +301,3 @@ class TrainingHistory():
 
 
 #%% 
-

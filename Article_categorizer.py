@@ -66,8 +66,30 @@ tokenized_text_article = eda.text_tokenizer(lower_split_text,
 # to view the number of word per number
 print(tokenized_text_article)
 
+
+
 # pad sequence to ensure the length of the text is the same length i.e: 200
 pad_seq_text_article = eda.text_pad_sequences(tokenized_text_article)
+
+#%%
+from tensorflow.keras.preprocessing.text import Tokenizer
+
+data = lower_split_text
+#token_save_path,
+num_words=10000
+oov_token='<OOV>'
+       
+        
+        
+         # OOV out of vocab
+        
+        # tokenizer to vectorize the words
+tokenizer = Tokenizer(num_words=num_words, oov_token=oov_token)
+tokenizer.fit_on_texts(data)
+        
+          # to observe the number of words
+word_index = tokenizer.word_index
+print(len(word_index)+1)
 
 
 
