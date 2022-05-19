@@ -22,7 +22,21 @@ model_article_analysis.h5 is the saved model
 
 The accuracy of the model is  using x hidden layers and x nodes.
 
-The model accuracy is ---.
+The model accuracy is 92%
+
+Summary Report and F1 score:
+
+              precision    recall  f1-score   support
+
+           0       0.98      0.92      0.95       156
+           1       0.84      0.89      0.86       116
+           2       0.92      0.94      0.93       121
+           3       0.97      0.93      0.95       147
+           4       0.89      0.93      0.91       128
+
+    accuracy                           0.92       668
+   macro avg       0.92      0.92      0.92       668
+weighted avg       0.93      0.92      0.92       668
 
 
 Suggestion 1: 
