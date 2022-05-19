@@ -10,33 +10,42 @@ namely Sport, Tech, Business, Entertainment and Politics
 
 ##%
 import re
-import pandas as pd
-import numpy as np
-import re
+#import pandas as pd
+#import numpy as np
 import datetime
 import os
-from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.callbacks import TensorBoard
+#from tensorflow.keras.callbacks import EarlyStopping
+#from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.models import Sequential #model is only for Sequential Model
 from tensorflow.keras.layers import Dropout, Dense,  LSTM
 from tensorflow.keras.layers import Embedding, Bidirectional
-from tensorflow.keras import Input
+#from tensorflow.keras import Input
 from tensorflow.keras.utils import plot_model
-from sklearn.preprocessing import OneHotEncoder
+#from sklearn.preprocessing import OneHotEncoder
 import matplotlib.pyplot as plt
-import seaborn as sns
 import json
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
+#from sklearn.model_selection import train_test_split
 
-# Saved path for the tokenizer
-TOKENIZER_JSON_PATH = os.path.join(os.getcwd(), 'tokenizer_data.json')
+#%% Saved path for static variable
+URL = 'https://raw.githubusercontent.com/susanli2016/PyCon-Canada-2019-NLP-Tutorial/master/bbc-text.csv'
+TOKENIZER_JSON_PATH = os.path.join(os.getcwd(), 'Saved_models', 
+                                   'tokenizer_data.json')
 
-#%%
+LOG_PATH = os.path.join(os.getcwd(),'Log_article_analysis')
+
+MODEL_SAVE_PATH = os.path.join(os.getcwd(), 'Saved_models', 
+                               'model_article_analysis.h5')  
+
+log_files = os.path.join(LOG_PATH, 
+                         datetime.datetime.now().strftime('%Y%m%d-%H%M%S'))
+
+
+#%% Class module and Function Definition
 ## IMPORTANT!!#
 # To use class module, must create empty python file name "__init__.py"
 # and save in the same working folder as this file
@@ -158,7 +167,30 @@ class ModelCreation():
         pass
     
     def lstm_layer(self,num_words, num_categories,
-                   embedding_output=64, nodes=32, dropout_value=0.2):
+                   embedding_output=128, nodes=64, dropout_value=0.2):
+        """
+        This function creates the Sequential LSTM model with embedding, 
+        bi-directional and dropout layer
+
+        Parameters
+        ----------
+        num_words : TYPE
+            DESCRIPTION.
+        num_categories : TYPE
+            DESCRIPTION.
+        embedding_output : TYPE, optional
+            DESCRIPTION. The default is 128.
+        nodes : TYPE, optional
+            DESCRIPTION. The default is 64.
+        dropout_value : TYPE, optional
+            DESCRIPTION. The default is 0.2.
+
+        Returns
+        -------
+        model : TYPE
+            DESCRIPTION.
+
+        """
         
         model = Sequential()
         model.add(Embedding(num_words, embedding_output))
@@ -192,6 +224,21 @@ class ModelCreation():
                                                       
 class ModelEvaluation():
     def report_metrics(self, y_true, y_pred):
+        """
+        To print out classification report, confusion matrix plot and print
+        the accuracy score
+
+        Parameters
+        ----------
+        y_true : TYPE
+            DESCRIPTION.
+        y_pred : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+        """
         print(classification_report(y_true, y_pred))
         print(confusion_matrix(y_true, y_pred))
         
@@ -199,60 +246,80 @@ class ModelEvaluation():
         disp = ConfusionMatrixDisplay(confusion_matrix=cm)
     
         disp.plot(cmap=plt.cm.Blues)
+        plt.title('Confusion Matrix')
+        plt.xlabel('Predicted Category')
+        plt.ylabel('Actual Category')
         plt.show()
-        print('Accuracy score is', accuracy_score(y_true, y_pred))
+        print('\nAccuracy score is', round(accuracy_score(y_true, y_pred)*100,2),'%')
+        
+class TrainingHistory():
+    def training_history(hist):
+        """
+        To visualise the training and validation graph using matplotlib
+        Parameters
+        ----------
+        hist : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        training and validation runs and history of runs..
+
+        """
+        keys = [i for i in hist.history.keys()]
+        
+        training_loss = hist.history[keys[0]] #this is cross_entrophy loss
+        training_metric = hist.history[keys[1]] #accuracy of the model
+        validation_loss = hist.history[keys[2]]
+        validation_metric = hist.history[keys[3]]
+       
+        # step 5a) model evaluation to evaluate training loss
+        plt.figure()
+        plt.plot(training_loss)
+        plt.plot(validation_loss)
+        plt.title('Training {} and validation {}'.format(keys[0], keys[0]))
+        plt.xlabel('epoch')
+        plt.ylabel(keys[0])
+        plt.legend(['training loss', 'validation loss'])
+        plt.show
       
+        # step 5b) model evaluation to evaluate training accuracy
+        plt.figure()
+        plt.plot(training_metric)
+        plt.plot(validation_metric)
+        plt.title('Training {} and validation {}'.format(keys[1], keys[1]))
+        plt.xlabel('epoch')
+        plt.ylabel(keys[1])
+        plt.legend(['training accuracy', 'validation accuracy'])
+        plt.show      
         
 
 
-#%%
-
-
-URL = 'https://raw.githubusercontent.com/susanli2016/PyCon-Canada-2019-NLP-Tutorial/master/bbc-text.csv'
-TOKENIZER_JSON_PATH = os.path.join(os.getcwd(), 'tokenizer_data.json')
-LOG_PATH = os.path.join(os.getcwd(),'Log_article_analysis')
-MODEL_SAVE_PATH = os.path.join(os.getcwd(), 'model_article_analysis.h5')  
-
-log_files = os.path.join(LOG_PATH, 
-                         datetime.datetime.now().strftime('%Y%m%d-%H%M%S'))
-
-
-#%%
-
-
+#%% Step 1) Data Loading
+"""
 df = pd.read_csv(URL)
 category = df['category']
 text_article = df['text']
     
-#%% EDA function call
-# this is a test data that will be overwritten from
-#  1) remove html tags from text, 2) lowercase and split each word 
-# 3) tokenized it: assign number to each word 
-# 4) add paddding sequence -> to ensure word is similar length
-
-#eda = ExploratoryDataAnalysis() # call the function class for EDA
-#test = eda.remove_tags(review) # remove html tag save the review text in to test var
-#test = eda.lower_split(test) # convert text to lowercase and split
-
-#test = eda.sentiment_tokenizer(test, token_save_path=TOKENIZER_JSON_PATH,
- #                             prt=True)
-
-#test = eda.sentiment_pad_sequences(test)
 
 #%% Call EDA function 
-# Step 1: Data Cleaning
+# Step 2) Data Cleaning
 
 # assign eda variable to call function
 eda = ExploratoryDataAnalysis()
 
-tags_removed = eda.remove_tags(text_article) # remove html tag from review text
+# remove html tag from review text
+tags_removed = eda.remove_tags(text_article) 
 
-lower_split_text = eda.lower_split(tags_removed) # convert text to lowercase and split
+# convert text to lowercase and split
+lower_split_text = eda.lower_split(tags_removed) 
 
-#3) tokenized it: assign number to each word 
+#Step 3) tokenized it: assign number to each word 
 tokenized_text_article = eda.text_tokenizer(lower_split_text, 
                                             token_save_path=TOKENIZER_JSON_PATH, 
                                             prt=True)
+# to view the number of word per number
+print(tokenized_text_article)
 
 # pad sequence to ensure the length of the text is the same length i.e: 200
 pad_seq_text_article = eda.text_pad_sequences(tokenized_text_article)
@@ -260,15 +327,13 @@ pad_seq_text_article = eda.text_pad_sequences(tokenized_text_article)
 
 
 #%% 
-# Step 5) Data Pre-processing
+# Step 4) Data Pre-processing
 # One Hot Encoding for Label (category)
 one_hot_encoder = OneHotEncoder(sparse=False)
 category_encoded = one_hot_encoder.fit_transform(np.expand_dims(category, 
                                                                  axis=-1))
 
-#%%
-
-
+#%% Step 5) Prepare x/y training and test data
 
 # x is the article text that has been clean and pad sequenced, 
 # y is the category
@@ -297,13 +362,17 @@ print(one_hot_encoder.inverse_transform(np.expand_dims(y_train[6], axis=0)))
 
 #%% Model creation function call
 
+# number of words per tokenizer about 9779
 num_words = 10000
 
-# to calculate number of total categories in the categories column
+# to auto-calculate number of total categories in the categories column
 # business, entertainment, politics, sport, tech
 num_categories = len(np.unique(category)) # categories there are 5
 mc = ModelCreation()
 model = mc.lstm_layer(num_words, num_categories)
+
+#view model in console
+plot_model(model)
 
 #%% Compile & Model fitting
 
@@ -325,6 +394,13 @@ hist = model.fit(x_train, y_train, epochs=100,
 
 print(hist.history.keys())
 
+#%% Visualise the model using matplotlib
+
+TrainingHistory.training_history(hist)
+
+# to view the tensorboard go to browser type: http://localhost:6006/
+# run in anaconda prompt tf_env: tensorboard --logdir "<path of log files>"
+
 #%% Model Evaluation
 
 # preallocation of memory approach:
@@ -340,8 +416,12 @@ for index, test in enumerate(x_test):
 y_pred = np.argmax(predicted_advanced, axis=1)
 y_true = np.argmax(y_test, axis=1)
 
+# to view the Accuracy score, F1 score and confussion matrix plot
 model_eval = ModelEvaluation()
 model_eval.report_metrics(y_true, y_pred)
 
-#%% Model Deployment
+
+#%% Saved Model for Deployment
 model.save(MODEL_SAVE_PATH)
+
+"""
