@@ -37,8 +37,9 @@ Suggestion 2:
 
 
 # Credit
-Credit goes to abisheksudarshan from Kaggle for the dataset
-https://www.kaggle.com/datasets/abisheksudarshan/customer-segmentation
+Credit goes to susanli2016 from GitHub for the dataset
+
+https://raw.githubusercontent.com/susanli2016/PyCon-Canada-2019-NLP-Tutorial/master/bbc-text.csv
 
 
 # Images
