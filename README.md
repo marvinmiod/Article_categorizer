@@ -37,12 +37,6 @@ Summary Report and F1 score:
 weighted avg       0.95      0.95      0.95       668
 
 
-[[148   0   2   0   6]
- [  3 111   1   0   1]
- [  4   1 109   0   7]
- [  0   2   1 144   0]
- [  2   3   0   0 123]]
-
 Accuracy score is 95.06 %
 
 Improvements to code: 
